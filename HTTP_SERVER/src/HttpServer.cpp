@@ -102,9 +102,33 @@ void HttpServer::run()
 			sendResponse(request.id, res);
 		});
 
-	mServer.Get("/Command", [&](auto& req, auto& res) {
-		res.set_content("Command", "text/plain");
-		});
+	mServer.Get("/Command/", [&](auto& req, auto& res) {
+		std::optional<CommandMode> mode = StringToCommand(req.get_param_value("mode"));
+		if (!mode.has_value())
+		{
+			res.status = 400;
+			res.set_content("Missing 'mode' parameter can be once/begin/end", "text/plain");
+			spdlog::critical("Request was missing mandatory 'mode' arguments...");
+			return;
+		}
+		if (req.get_param_value("link").empty()) {
+			res.status = 400;
+			res.set_content("Missing 'link' parameter", "text/plain");
+			spdlog::critical("Request was missing mandatory 'link' arguments...");
+			return;
+		}
+		SimRequest request{
+			mRequestId++,
+			RequestModule::Command,
+			CommandRequest{
+				mode.value(),
+				req.get_param_value("link")
+			}
+		};
+		mRequestQueue.push(request);
+		sendResponse(request.id, res);
+	});
+		
 	mServer.listen(mIp.c_str(), mPort);
 }
 

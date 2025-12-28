@@ -19,13 +19,14 @@ std::optional<DataRefValue> DummyDatarefManager::get(const std::string& path)
 	return std::nullopt;
 }
 
-bool DummyDatarefManager::set(const std::string& path, DataRefValue value)
+bool DummyDatarefManager::set(const std::string& path, json value)
 {
 	if (mDatarefs.contains(path))
 	{
-		mDatarefs[path] = value;
+		mDatarefs[path] = value.get<double>();
+		return true;
 	}
 
-	mDatarefs.emplace(path, std::get<double>(value));
+	mDatarefs.emplace(path, value.get<double>());
 	return true;
 }
