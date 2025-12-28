@@ -1,4 +1,6 @@
-#include "DataRef.h"
+#include "DataRef.hpp"
+
+
 
 DataRef::DataRef(const std::string& link) :
 	DataRef(link, DataRefType::Undefined)
@@ -15,43 +17,37 @@ DataRef::DataRef(const std::string& link, DataRefType type):
 	mIsReadOnly = !XPLMCanWriteDataRef(mDataRef);
 }
 
-bool DataRef::setValue(DataRefValue value) const
+bool DataRef::setValue(json value) const
 {
 	if (mIsReadOnly) return false;
 	switch (mType)
 	{
 		case DataRefType::Int:
 		{
-			if (int* val = std::get_if<int>(&value))
-			{
-				XPLMSetDatai(mDataRef, *val);
-				return true;
-			}
-			break;
+			int val = value.get<int>();
+			XPLMSetDatai(mDataRef, val);
+			return true;
 		}
 		case DataRefType::Float:
 		{
-			if (float* val = std::get_if<float>(&value))
-			{
-				XPLMSetDataf(mDataRef, *val);
-				return true;
-			}
-			break;
+			float val = value.get<float>();
+			XPLMSetDataf(mDataRef, val);
+			return true;
 		}
 		case DataRefType::Double:
 		{
-			if (double* val = std::get_if<double>(&value))
-			{
-				XPLMSetDatad(mDataRef, *val);
-				return true;
-			}
-			break;
+			double val = value.get<double>();
+			XPLMSetDatad(mDataRef, val);
+			return true;
 		}
 		default:
-			break;
+			return false;
 	};
-	return false;
+	return true;
 }
+
+
+
 
 bool DataRef::getValue(DataRefValue& outValue) const
 {
@@ -73,9 +69,9 @@ bool DataRef::getValue(DataRefValue& outValue) const
 		break;
 	}
 	default:
-		break;
+		return false;
 	};
-	return false;
+	return true;
 }
 
 DataRefType DataRef::determineType(XPLMDataRef dataRef) const
@@ -100,4 +96,5 @@ DataRefType DataRef::determineType(XPLMDataRef dataRef) const
 	default:
 		break;
 	}
+	return DataRefType::Undefined;
 }

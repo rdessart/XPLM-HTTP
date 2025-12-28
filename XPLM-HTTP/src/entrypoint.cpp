@@ -1,4 +1,26 @@
+#include <HttpServer.hpp>
 #include <XPLM/XPLMDefs.h>
+#include <XPLM/XPLMProcessing.h>
+
+#include <Dispatcher/SimDispatcher.hpp>
+#include "Datarefs/DataRefManager.hpp"
+#include "Commands/CommandManager.hpp"
+
+
+static ThreadSafeQueue<SimRequest>  requestQueue;
+static ThreadSafeQueue<SimResponse> responseQueue;
+static DataRefManager datarefManager;
+static CommandManager commandManager;
+
+static HttpServer httpServer(requestQueue, responseQueue);
+static SimDispatcher dispatcher(datarefManager, commandManager, requestQueue, responseQueue);
+static XPLMFlightLoopID serverCallbackID = nullptr;
+
+float handleRequestCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon)
+{
+	dispatcher.process();
+	return -1.0;
+}
 
 PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) 
 {
@@ -8,14 +30,26 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc)
 	return 1;
 }
 
-PLUGIN_API void XPluginEnable() 
+PLUGIN_API int XPluginEnable() 
 {
-
+	httpServer.init(8080, "127.0.0.1");
+	XPLMCreateFlightLoop_t serverCallback
+	{
+		sizeof(XPLMCreateFlightLoop_t),
+		xplm_FlightLoop_Phase_AfterFlightModel,
+		handleRequestCallback,
+		nullptr
+	};
+	serverCallbackID = XPLMCreateFlightLoop(&serverCallback);
+	XPLMScheduleFlightLoop(serverCallbackID, -1.0, 0);
+	httpServer.start();
+	return 1;
 }
 
 PLUGIN_API void XPluginDisable() 
 {
-
+	XPLMDestroyFlightLoop(serverCallbackID);
+	httpServer.stop();
 }
 
 PLUGIN_API void XPluginStop() 

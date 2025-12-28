@@ -1,0 +1,9 @@
+{
+  "name": "xplm-http",
+  "version": "1.0.0",
+  "dependencies": [
+    "cpp-httplib",
+    "spdlog",
+    "nlohmann-json"
+  ]
+}

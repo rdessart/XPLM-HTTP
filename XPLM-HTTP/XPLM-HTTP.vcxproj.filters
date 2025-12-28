@@ -35,7 +35,7 @@
     <ClInclude Include="src\Commands\CommandManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Datarefs\DataRef.h">
+    <ClInclude Include="src\Datarefs\DataRef.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

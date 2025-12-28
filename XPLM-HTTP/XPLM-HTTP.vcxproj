@@ -45,19 +45,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(ProjectName)\win_x64\</OutDir>
-    <IntDir>$(SolutionDir)temp\</IntDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetExt>.xpl</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(ProjectName)\win_x64\</OutDir>
-    <IntDir>$(SolutionDir)temp\</IntDir>
+    <IntDir>$(SolutionDir)temp\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetExt>.xpl</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>IBM;XPLM200;XPLM210;XPLM300;XPLM301;XPLM303;XPLM400;XPLM411</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IBM;XPLM200;XPLM210;XPLM300;XPLM301;XPLM303;XPLM400;XPLM411;FMT_UNICODE=0</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)HTTP_SERVER\include;$(SolutionDir)vendors\XPSDK\CHeaders;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -68,6 +71,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)vendors\XPSDK\Libraries\Win</AdditionalLibraryDirectories>
       <AdditionalDependencies>XPLM_64.lib;XPWidgets_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y /i "$(outdir)" "$(xplane)\Resources\plugins\$(ProjectName)\win_x64"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -75,7 +81,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>IBM;XPLM200;XPLM210;XPLM300;XPLM301;XPLM303;XPLM400;XPLM411</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IBM;XPLM200;XPLM210;XPLM300;XPLM301;XPLM303;XPLM400;XPLM411;FMT_UNICODE=0</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)HTTP_SERVER\include;$(SolutionDir)vendors\XPSDK\CHeaders;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -86,6 +92,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)vendors\XPSDK\Libraries\Win</AdditionalLibraryDirectories>
       <AdditionalDependencies>XPLM_64.lib;XPWidgets_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y /i "$(outdir)" "$(xplane)\Resources\plugins\$(ProjectName)\win_x64"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Datarefs\DataRef.cpp" />
@@ -99,7 +108,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Datarefs\DataRef.h" />
+    <ClInclude Include="src\Datarefs\DataRef.hpp" />
     <ClInclude Include="src\Commands\CommandManager.hpp" />
     <ClInclude Include="src\Datarefs\DataRefManager.hpp" />
   </ItemGroup>

@@ -2,14 +2,17 @@
 #include <string>
 #include <variant>
 #include <vector>
-
+#include <nlohmann/json.hpp>
 #include <XPLM/XPLMDataAccess.h>
-#include <DataRefType.hpp>
-#include <DataRefValue.hpp>
+#include <DataRefs/DataRefType.hpp>
+#include <DataRefs/DataRefValue.hpp>
+
+using json = nlohmann::json;
 
 class DataRef
 {
 public:
+	DataRef() = delete;
 	DataRef(const std::string& link);
 	DataRef(const std::string& link, DataRefType type);
 
@@ -19,7 +22,7 @@ public:
 	bool isValid() const { return mIsValid; }
 	XPLMDataRef getDataRef() const { return mDataRef; }
 
-	bool setValue(DataRefValue value) const;
+	bool setValue(json value) const;
 	bool getValue(DataRefValue& outValue) const;
 
 protected:

@@ -5,6 +5,7 @@
 #include <optional>
 #include "../DataRefs/DataRefType.hpp"
 #include "../DataRefs/DataRefValue.hpp"
+#include "../Commands/ICommandExecutor.hpp"
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -25,18 +26,13 @@ struct DataRefRequest {
 	DataRefOperation Operation;
 	std::string Link;
 	DataRefType Type = DataRefType::Undefined;
-	std::optional<DataRefValue> Value = std::nullopt;
+	std::optional<json> Value = std::nullopt;
 
 };
 
 
 struct CommandRequest {
-	enum CommandOperation {
-		Once,
-		Begin,
-		End
-	};
-	CommandOperation Operation;
+	CommandMode Operation;
 	std::string Link;
 };
 
