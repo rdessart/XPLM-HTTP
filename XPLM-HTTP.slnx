@@ -1,7 +1,8 @@
 <Solution>
   <Configurations>
     <Platform Name="x64" />
-    <Platform Name="x86" />
   </Configurations>
-  <Project Path="XPLM-HTTP/XPLM-HTTP.vcxproj" />
+  <Project Path="HTTP_SERVER/HTTP_SERVER.vcxproj" Id="a557a7c8-4252-4953-930d-5c843ce192d0" />
+  <Project Path="XPLM-HTTP-TEST/XPLM-HTTP-TEST.vcxproj" Id="0621bfd9-c82f-4eeb-97eb-4da7f8635303" />
+  <Project Path="XPLM-HTTP/XPLM-HTTP.vcxproj" Id="dfd6e6e9-d3fa-4133-96bd-fa87f8173a89" />
 </Solution>
