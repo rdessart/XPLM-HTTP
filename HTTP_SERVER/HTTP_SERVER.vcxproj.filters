@@ -15,19 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Commands\ICommandExecutor.hpp">
+    <ClInclude Include="include\Simulator\ICommandExecutor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\DataRefs\IDataProvider.hpp">
+    <ClInclude Include="include\Simulator\IDataRefManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\HttpServer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\DataRefs\DataRefType.hpp">
+    <ClInclude Include="include\Simulator\DataRefType.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\DataRefs\DataRefValue.hpp">
+    <ClInclude Include="include\Simulator\DataRefValue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Dispatcher\SimRequest.hpp">
@@ -36,10 +36,13 @@
     <ClInclude Include="include\ThreadSafeQueue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Dispatcher\SimResponse.hpp">
+    <ClInclude Include="include\Dispatcher\SimDispatcher.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Dispatcher\SimDispatcher.hpp">
+    <ClInclude Include="include\RequestRegistry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Simulator\ISimulatorInterface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -48,6 +51,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\SimDispatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RequestRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Simulator\CommandMode.hpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

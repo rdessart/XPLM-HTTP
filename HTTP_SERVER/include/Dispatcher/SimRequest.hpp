@@ -3,12 +3,15 @@
 #include <string>
 #include <variant>
 #include <optional>
-#include "../DataRefs/DataRefType.hpp"
-#include "../DataRefs/DataRefValue.hpp"
-#include "../Commands/ICommandExecutor.hpp"
+#include <future>
+#include "../Simulator/DataRefType.hpp"
+#include "../Simulator/DataRefValue.hpp"
+#include "../Simulator/ICommandExecutor.hpp"
+#include "../Simulator/CommandMode.hpp"
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
+
 
 // Module request enum, if module are added we need to add them here
 enum class RequestModule {
@@ -29,9 +32,8 @@ struct DataRefRequest {
 	std::optional<json> Value = std::nullopt;
 
 };
-
-
 struct CommandRequest {
+
 	CommandMode Operation;
 	std::string Link;
 };
@@ -79,4 +81,16 @@ struct SimRequest {
 	}
 #endif // _DEBUG
 
+};
+
+struct SimResponse {
+	uint64_t id;
+	bool success;
+	json value;
+	std::string error;
+};
+
+struct RequestContext {
+	uint64_t id;
+	std::promise<SimResponse> promise;
 };

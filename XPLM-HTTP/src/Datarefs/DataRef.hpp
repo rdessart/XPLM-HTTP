@@ -4,8 +4,8 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 #include <XPLM/XPLMDataAccess.h>
-#include <DataRefs/DataRefType.hpp>
-#include <DataRefs/DataRefValue.hpp>
+#include <Simulator/DataRefType.hpp>
+#include <Simulator/DataRefValue.hpp>
 
 using json = nlohmann::json;
 

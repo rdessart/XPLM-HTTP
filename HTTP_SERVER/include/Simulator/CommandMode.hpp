@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include <optional>
+#include <string>
 
 enum class CommandMode {
     Once,
@@ -15,9 +15,3 @@ static inline std::optional<CommandMode> StringToCommand(const std::string& inpu
     if (input == "end") return CommandMode::End;
     return std::nullopt;
 }
-
-class ICommandExecutor {
-public:
-    virtual void execute(const std::string& command, CommandMode mode) = 0;
-    virtual ~ICommandExecutor() = default;
-};

@@ -1,19 +1,42 @@
 #include "DataRefManager.hpp"
 
-std::optional<DataRefValue> DataRefManager::get(const std::string& path)
+SimResponse DataRefManager::handle(const SimRequest& request)
 {
-	DataRef dataref = resolve(path);
-    DataRefValue val;
-    if(!dataref.getValue(val))
-		return std::nullopt;
-    return val;
+    SimResponse response;
+    response.id = request.id;
+    const auto& drReq = std::get<DataRefRequest>(request.Payload);
+    DataRef dr = resolve(drReq.Link);
+    if (!dr.isValid())
+    {
+        response.error = "DataRef is not found!";
+        response.success = false;
+        return response;
+    }
+    switch (drReq.Operation)
+    {
+    case DataRefRequest::Get:
+    {
+        DataRefValue val;
+        if (!dr.getValue(val))
+        {
+            response.success = false;
+            response.error = "Unable to find dataref";
+            return response;
+        }
+        response.success = true;
+        response.value = DataRefValueToJson(val);
+        return response;
+    }
+    case DataRefRequest::Set:
+        response.success = dr.setValue(drReq.Value);
+        return response;
+    default:
+        response.error = "Operation not found!";
+        response.success = false;
+        return response;
+    }
 }
 
-bool DataRefManager::set(const std::string& path, nlohmann::json value)
-{
-    DataRef dataref = resolve(path);
-    return dataref.setValue(value);
-}
 
 DataRef DataRefManager::resolve(const std::string& path)
 {

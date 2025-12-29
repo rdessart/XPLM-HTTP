@@ -1,7 +1,8 @@
 #include "DummyDatarefManager.hpp"
+#include <Dispatcher/SimRequest.hpp>
 
 DummyDatarefManager::DummyDatarefManager() :
-	IDataProvider(),
+	IDataRefManager(),
 	mDatarefs()
 {
 	mDatarefs.emplace("sim/test/float", 3.14f);
@@ -9,24 +10,26 @@ DummyDatarefManager::DummyDatarefManager() :
 	mDatarefs.emplace("sim/test/double", 3.14);
 }
 
-std::optional<DataRefValue> DummyDatarefManager::get(const std::string& path)
+SimResponse DummyDatarefManager::handle(const SimRequest& request)
 {
-	if (mDatarefs.contains(path))
-	{
-		return mDatarefs[path];
-	}
-
-	return std::nullopt;
-}
-
-bool DummyDatarefManager::set(const std::string& path, json value)
-{
-	if (mDatarefs.contains(path))
-	{
-		mDatarefs[path] = value.get<double>();
-		return true;
-	}
-
-	mDatarefs.emplace(path, value.get<double>());
-	return true;
+    SimResponse response;
+    response.id = request.id;
+    const auto& drReq = std::get<DataRefRequest>(request.Payload);
+    switch (drReq.Operation)
+    {
+    case DataRefRequest::Get:
+    {
+        DataRefValue val;
+        response.success = true;
+        response.value = 5.65;
+        return response;
+    }
+    case DataRefRequest::Set:
+        response.success = true;
+        return response;
+    default:
+        response.error = "Operation not found!";
+        response.success = false;
+        return response;
+    }
 }

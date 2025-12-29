@@ -1,17 +1,16 @@
 #pragma once
 #include <unordered_map>
-#include <DataRefs/IDataProvider.hpp>
+#include <Simulator/IDataRefManager.hpp>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
 
-class DummyDatarefManager : public IDataProvider
+class DummyDatarefManager : public IDataRefManager
 {
 public:
 	DummyDatarefManager();
-	std::optional<DataRefValue> get(const std::string& path) override;
-	bool set(const std::string& path, json value) override;
+	SimResponse handle(const SimRequest& request) override;
 protected:
 	std::unordered_map<std::string, DataRefValue> mDatarefs;
 };

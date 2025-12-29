@@ -5,12 +5,14 @@
 
 using json = nlohmann::json;
 
-HttpServer::HttpServer(ThreadSafeQueue<SimRequest>& requestQueue, ThreadSafeQueue<SimResponse>& responseQueue):
+
+HttpServer::HttpServer(RequestRegistry& registry, ThreadSafeQueue<SimRequest>& requestQueue):
 	mIp("127.0.0.1"),
 	mPort(8080),
 	mRequestQueue(requestQueue),
-	mResponseQueue(responseQueue),
-	mRunning(false)
+	mRegistry(registry),
+	mRunning(false),
+	mRequestId(0)
 {
 	auto max_size = 1048576 * 5;
 	auto max_files = 3;
@@ -42,7 +44,7 @@ void HttpServer::run()
 	mServer.Get("/", [](const httplib::Request& req, httplib::Response& res) {
 		spdlog::info("Received request for '/'");
 		res.set_content("Hello, World!", "text/plain");
-		});
+	});
 
 	mServer.Get("/DataRef", [&](auto& req, auto& res) {
 		spdlog::info("Received request for '/DataRef'");
@@ -52,55 +54,56 @@ void HttpServer::run()
 			spdlog::critical("Request was missing mandatory 'link' arguments...");
 			return;
 		}
-		SimRequest request;
-		request.id = mRequestId++;
-		request.Type = RequestModule::DataRef;
-		spdlog::info("Processing DataRef GET for link: {} [id={}]", req.get_param_value("link"), mRequestId);
+		
+		spdlog::info("Processing DataRef GET for link: {} [id={}]", req.get_param_value("link"), mRequestId.load());
 		DataRefType type = DataRefType::Undefined;
 		if (req.get_param_value("type").empty() == false) {
 			type = DataRefTypeFromString(req.get_param_value("type"));
-			spdlog::info("[id={}] DataRef type specified: {}", mRequestId, req.get_param_value("type"));
+			spdlog::info("[id={}] DataRef type specified: {}", mRequestId.load(), req.get_param_value("type"));
 		}
 
-		request.Payload = DataRefRequest
+		SimRequest request
 		{
-			DataRefRequest::Get,
-			req.get_param_value("link"),
-			type,
-			std::nullopt
+			generateId(),
+			RequestModule::DataRef,
+			DataRefRequest
+			{
+				DataRefRequest::Get,
+				req.get_param_value("link"),
+				type,
+				std::nullopt
+			}
 		};
-
-		mRequestQueue.push(request);
-		sendResponse(request.id, res);
-		});
+		sendResponse(request, res);
+	});
 
 	mServer.Post("/DataRef", [&](auto& req, auto& res) {
-			json j = json::parse(req.body, nullptr, false);
-			if (!j.contains("Link") || !j.contains("Value"))
-			{
-				res.status = 400;
-				return;
-			}
-			SimRequest request
-			{
-				mRequestId++,
-				RequestModule::DataRef,
-			};
-			DataRefType type = DataRefType::Undefined;
-			if (req.get_param_value("type").empty() == false) {
-				type = DataRefTypeFromString(req.get_param_value("type"));
-				spdlog::info("[id={}] DataRef type specified: {}", mRequestId, req.get_param_value("type"));
-			}
-			request.Payload = DataRefRequest
+		json j = json::parse(req.body, nullptr, false);
+		if (!j.contains("Link") || !j.contains("Value"))
+		{
+			res.status = 400;
+			return;
+		}
+			
+		DataRefType type = DataRefType::Undefined;
+		if (req.get_param_value("type").empty() == false) {
+			type = DataRefTypeFromString(req.get_param_value("type"));
+			spdlog::info("[id={}] DataRef type specified: {}", mRequestId.load(), req.get_param_value("type"));
+		}
+		SimRequest request
+		{
+			generateId(),
+			RequestModule::DataRef,
+			DataRefRequest
 			{
 				DataRefRequest::Set,
 				j["Link"],
 				type,
 				j["Value"]
-			};
-			mRequestQueue.push(request);
-			sendResponse(request.id, res);
-		});
+			}
+		};
+		sendResponse(request, res);
+	});
 
 	mServer.Get("/Command/", [&](auto& req, auto& res) {
 		std::optional<CommandMode> mode = StringToCommand(req.get_param_value("mode"));
@@ -118,36 +121,56 @@ void HttpServer::run()
 			return;
 		}
 		SimRequest request{
-			mRequestId++,
+			generateId(),
 			RequestModule::Command,
 			CommandRequest{
 				mode.value(),
 				req.get_param_value("link")
 			}
 		};
-		mRequestQueue.push(request);
-		sendResponse(request.id, res);
+		sendResponse(request, res);
 	});
 		
 	mServer.listen(mIp.c_str(), mPort);
 }
 
-void HttpServer::sendResponse(uint64_t id, httplib::Response& res)
+void HttpServer::sendResponse(SimRequest const request, httplib::Response& res)
 {
-	SimResponse response;
-	while (mRunning) {
-		mResponseQueue.wait_pop(response);
-		if (response.id == id) {
-			json out;
-			out["ok"] = response.success;
-			if (response.success)
-				out["value"] = response.value;
-			else
-				out["error"] = response.error;
+	auto future = mRegistry.create(request.id);
+	mRequestQueue.push(request);
 
-			res.set_content(out.dump(), "application/json");
-			return;
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	if (future.wait_for(DefaultTimeout) != std::future_status::ready)
+	{
+		res.status = 504;
+		res.set_content("Timeout reached with request", "text/plain");
+		return;
 	}
+
+	SimResponse simRes = future.get();
+	if (!simRes.success)
+	{
+		res.status = 500;
+		res.set_content(simRes.error, "text/plain");
+	}
+	res.set_content(simRes.value.dump(), "application/json");
 }
+
+//void HttpServer::sendResponse(uint64_t id, httplib::Response& res)
+//{
+//	SimResponse response;
+//	while (mRunning) {
+//		mResponseQueue.wait_pop(response);
+//		if (response.id == id) {
+//			json out;
+//			out["ok"] = response.success;
+//			if (response.success)
+//				out["value"] = response.value;
+//			else
+//				out["error"] = response.error;
+//
+//			res.set_content(out.dump(), "application/json");
+//			return;
+//		}
+//		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+//	}
+//}

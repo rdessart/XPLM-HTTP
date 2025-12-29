@@ -84,17 +84,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\DataRefs\DataRefType.hpp" />
-    <ClInclude Include="include\DataRefs\DataRefValue.hpp" />
+    <ClInclude Include="include\Simulator\DataRefType.hpp" />
+    <ClInclude Include="include\Simulator\DataRefValue.hpp" />
     <ClInclude Include="include\Dispatcher\SimDispatcher.hpp" />
     <ClInclude Include="include\Dispatcher\SimRequest.hpp" />
     <ClInclude Include="include\HttpServer.hpp" />
-    <ClInclude Include="include\Commands\ICommandExecutor.hpp" />
-    <ClInclude Include="include\DataRefs\IDataProvider.hpp" />
+    <ClInclude Include="include\Simulator\ICommandExecutor.hpp" />
+    <ClInclude Include="include\Simulator\IDataRefManager.hpp" />
+    <ClInclude Include="include\Simulator\ISimulatorInterface.hpp" />
     <ClInclude Include="include\ThreadSafeQueue.hpp" />
-    <ClInclude Include="include\Dispatcher\SimResponse.hpp" />
+    <ClInclude Include="include\RequestRegistry.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\Simulator\CommandMode.hpp" />
+    <ClCompile Include="src\RequestRegistry.cpp" />
     <ClCompile Include="src\SimDispatcher.cpp" />
     <ClCompile Include="src\HttpServer.cpp" />
   </ItemGroup>

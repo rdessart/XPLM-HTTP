@@ -1,22 +1,22 @@
 #pragma once
 #include <spdlog/spdlog.h>
-#include "SimRequest.hpp"
-#include "SimResponse.hpp"
 
+#include "SimRequest.hpp"
+#include "../RequestRegistry.hpp"
 #include "../ThreadSafeQueue.hpp"
-#include "../DataRefs/IDataProvider.hpp"
-#include "../Commands/ICommandExecutor.hpp"
+#include "../Simulator/IDataRefManager.hpp"
+#include "../Simulator/ICommandExecutor.hpp"
 
 class SimDispatcher {
 public:
-    SimDispatcher(IDataProvider& drm, ICommandExecutor& cm, 
-        ThreadSafeQueue<SimRequest>& request, ThreadSafeQueue<SimResponse>&response);
+    SimDispatcher(IDataRefManager& drm, ICommandExecutor& cm,
+        RequestRegistry& registery, ThreadSafeQueue<SimRequest>& requestQueue);
     void process();
 
 private:
-    IDataProvider& dataRefs;
-    ICommandExecutor& commands;
+    IDataRefManager& mDataRefManager;
+    ICommandExecutor& mCommandExecutor;
+    RequestRegistry& mRequestRegistery;
     std::shared_ptr<spdlog::logger> mLogger;
     ThreadSafeQueue<SimRequest>& mRequestQueue;
-    ThreadSafeQueue<SimResponse>& mResponseQueue;
 };
