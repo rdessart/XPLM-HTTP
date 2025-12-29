@@ -1,8 +1,11 @@
 #pragma once
-
-#include <Simulator/ICommandExecutor.hpp>
-#include <XPLM/XPLMUtilities.h>
 #include <unordered_map>
+
+#include <XPLM/XPLMUtilities.h>
+
+#include <Dispatcher/SimRequest.hpp>
+#include <Simulator/ICommandExecutor.hpp>
+
 
 class CommandManager: public ICommandExecutor
 {

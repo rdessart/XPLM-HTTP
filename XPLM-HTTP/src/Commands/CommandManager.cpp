@@ -1,23 +1,5 @@
 #include "CommandManager.hpp"
 
-//void CommandManager::execute(const std::string& command, CommandMode mode)
-//{
-//	XPLMCommandRef cmd = resolve(command);
-//	if (cmd == nullptr) return;
-//	switch (mode)
-//	{
-//	case CommandMode::Once:
-//		XPLMCommandOnce(cmd);
-//		break;
-//	case CommandMode::Begin:
-//		XPLMCommandBegin(cmd);
-//		break;
-//	case CommandMode::End:
-//		XPLMCommandEnd(cmd);
-//		break;
-//	}
-//}
-
 SimResponse CommandManager::handle(const SimRequest& request)
 {
 	SimResponse response{

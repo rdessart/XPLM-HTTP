@@ -2,9 +2,12 @@
 #include <unordered_map>
 #include <string>
 
-#include <Simulator/IDataRefManager.hpp>
 #include <nlohmann/json.hpp>
+
 #include <XPLM/XPLMDataAccess.h>
+
+#include <Dispatcher/SimRequest.hpp>
+#include <Simulator/IDataRefManager.hpp>
 #include <Simulator/DataRefValue.hpp>
 #include "DataRef.hpp"
 

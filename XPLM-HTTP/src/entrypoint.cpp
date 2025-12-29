@@ -11,9 +11,10 @@ static ThreadSafeQueue<SimRequest>  requestQueue;
 static ThreadSafeQueue<SimResponse> responseQueue;
 static DataRefManager datarefManager;
 static CommandManager commandManager;
+static RequestRegistry registry;
 
-static HttpServer httpServer(requestQueue, responseQueue);
-static SimDispatcher dispatcher(datarefManager, commandManager, requestQueue, responseQueue);
+static SimDispatcher dispatcher(datarefManager, commandManager, registry, requestQueue);
+static HttpServer httpServer(registry, requestQueue);
 static XPLMFlightLoopID serverCallbackID = nullptr;
 
 float handleRequestCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon)
