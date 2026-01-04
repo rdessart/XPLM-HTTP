@@ -1,4 +1,4 @@
-#include "../../include/server/HttpServer.hpp"
+#include "../../include/Server/HttpServer.hpp"
 
 #include <iostream>
 #include <sstream>
