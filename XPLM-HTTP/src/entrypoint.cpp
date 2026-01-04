@@ -19,9 +19,15 @@ float handleRequestCallback(float inElapsedSinceLastCall, float inElapsedTimeSin
 
 PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) 
 {
+	#ifdef IBM
 	strcpy_s(outName, 256, "XPLM-HTTP");
 	strcpy_s(outSig, 256, "eSkyStudio.Network.http");
 	strcpy_s(outDesc, 256, "A X-Plane webserver for dataref access, command exectution and websocket");
+	#else
+	strcpy(outName, "XPLM-HTTP");
+	strcpy(outSig, "eSkyStudio.Network.http");
+	strcpy(outDesc, "A X-Plane webserver for dataref access, command exectution and websocket");
+	#endif
 	return 1;
 }
 
