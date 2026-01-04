@@ -97,9 +97,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Datarefs\DataRef.cpp" />
-    <ClCompile Include="src\Commands\CommandManager.cpp" />
-    <ClCompile Include="src\Datarefs\DataRefManager.cpp" />
+    <ClCompile Include="src\API\CommandAPI.cpp" />
     <ClCompile Include="src\entrypoint.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -108,9 +106,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Datarefs\DataRef.hpp" />
-    <ClInclude Include="src\Commands\CommandManager.hpp" />
-    <ClInclude Include="src\Datarefs\DataRefManager.hpp" />
+    <ClInclude Include="src\API\CommandAPI.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

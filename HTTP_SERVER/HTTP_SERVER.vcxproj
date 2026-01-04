@@ -84,22 +84,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\Simulator\DataRefType.hpp" />
-    <ClInclude Include="include\Simulator\DataRefValue.hpp" />
-    <ClInclude Include="include\Dispatcher\SimDispatcher.hpp" />
-    <ClInclude Include="include\Dispatcher\SimRequest.hpp" />
-    <ClInclude Include="include\HttpServer.hpp" />
-    <ClInclude Include="include\Simulator\ICommandExecutor.hpp" />
-    <ClInclude Include="include\Simulator\IDataRefManager.hpp" />
-    <ClInclude Include="include\Simulator\ISimulatorInterface.hpp" />
+    <ClInclude Include="include\API\BaseAPI.hpp" />
+    <ClInclude Include="include\API\HttpEndPoint.hpp" />
+    <ClInclude Include="include\API\HttpResponse.hpp" />
+    <ClInclude Include="include\API\IBaseAPI.hpp" />
+    <ClInclude Include="include\Server\HttpServer.hpp" />
     <ClInclude Include="include\ThreadSafeQueue.hpp" />
     <ClInclude Include="include\RequestRegistry.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\Simulator\CommandMode.hpp" />
-    <ClCompile Include="src\RequestRegistry.cpp" />
-    <ClCompile Include="src\SimDispatcher.cpp" />
-    <ClCompile Include="src\HttpServer.cpp" />
+    <ClCompile Include="src\Server\HttpServer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

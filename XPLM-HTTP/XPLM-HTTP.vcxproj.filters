@@ -18,24 +18,12 @@
     <ClCompile Include="src\entrypoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Datarefs\DataRefManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Commands\CommandManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Datarefs\DataRef.cpp">
+    <ClCompile Include="src\API\CommandAPI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Datarefs\DataRefManager.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Commands\CommandManager.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Datarefs\DataRef.hpp">
+    <ClInclude Include="src\API\CommandAPI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
