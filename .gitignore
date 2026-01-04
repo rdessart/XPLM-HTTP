@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /vendors/XPSDK/Delphi
 /vcpkg_installed/x64-windows
 build/
+.DS_Store
