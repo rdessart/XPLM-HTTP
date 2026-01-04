@@ -59,7 +59,7 @@ public:
 	///<summary>callback function to be call on the main thread
 	///<para>Function with promise to be call on X - Plane(or main) thread with full API ACCESS</para>
 	///</summary>
-	virtual void MainThreadHandle() = 0;
+	virtual void MainThreadHandle() override = 0;
 
 
 protected:
@@ -74,6 +74,7 @@ protected:
 		mCv.notify_one();
 		return future;
 	}
+
 	uint64_t generateId()
 	{
 		mId++;
