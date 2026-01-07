@@ -29,7 +29,10 @@ void HttpServer::Run()
 {
 	spdlog::info("Server is listening on {}", getBaseAddress());
 	Init();
-	mServer.listen(mIp, mPort);
+	bool res = mServer.listen(mIp, mPort);
+	mRunning = res;
+	spdlog::critical("SERVER IS UNABLE TO BIND ON {}", getBaseAddress());
+	mServer.stop();
 }
 
 void HttpServer::Init()
