@@ -67,8 +67,7 @@ void CommandAPI::MainThreadHandle()
 
     bool res = GetDataMainThread(id, data);
     if (!res) {
-        spdlog::critical("An unexpected error has occured while getting data for thread execution");
-        SetReturnMainThread(id, response);
+        //No data is available to read
         return;
     }
     XPLMCommandRef command = nullptr;

@@ -109,10 +109,8 @@ protected:
 	bool GetDataMainThread(uint64_t& outId, TReq& outData)
 	{
 		std::unique_lock<std::mutex> lock(mMutex);
-		mCv.wait(lock, [this] {return !mWorkQueue.empty(); });
-
 		if (mWorkQueue.empty()) return false;
-
+		mCv.wait(lock, [this] {return !mWorkQueue.empty(); });
 		outId = mWorkQueue.front();
 		mWorkQueue.pop();
 		outData = std::move(mRequestStore[outId]);
