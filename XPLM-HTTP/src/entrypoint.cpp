@@ -17,6 +17,18 @@ float handleRequestCallback(float inElapsedSinceLastCall, float inElapsedTimeSin
 	return -1.0;
 }
 
+float initCallBack(float inElapsedLC, float inElapsedLFL, int inCounter, void* inRefCon)
+{
+	server.SetListeningAddress("127.0.0.1", 28080);
+
+	XPLMRegisterFlightLoopCallback(handleRequestCallback, -1.0f, nullptr);
+
+	server.RegisterApi(commandApi);
+	server.Start();
+
+	return 0;
+}
+
 PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) 
 {
 	#ifdef IBM
@@ -33,18 +45,7 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc)
 
 PLUGIN_API int XPluginEnable() 
 {
-	server.SetListeningAddress("127.0.0.1", 8080);
-	XPLMCreateFlightLoop_t serverCallback
-	{
-		sizeof(XPLMCreateFlightLoop_t),
-		xplm_FlightLoop_Phase_AfterFlightModel,
-		handleRequestCallback,
-		nullptr
-	};
-	serverCallbackID = XPLMCreateFlightLoop(&serverCallback);
-	XPLMScheduleFlightLoop(serverCallbackID, -1.0, 0);
-	server.RegisterApi(commandApi);
-	server.Start();
+	XPLMRegisterFlightLoopCallback(initCallBack, -1.0f, nullptr);
 	return 1;
 }
 
