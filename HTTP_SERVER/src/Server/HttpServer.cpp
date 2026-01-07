@@ -56,6 +56,7 @@ void HttpServer::Init()
 				mServer.Get(address.str(), [=](const httplib::Request& req, httplib::Response& res)
 					{
 						auto result = api.CallBack(api.callbackArgs, req);
+						res.status = result.isSuccess ? 200 : 500;
 						res.set_content(result.Serialize().dump(), "application/json");
 					});
 				break;
@@ -65,6 +66,7 @@ void HttpServer::Init()
 				mServer.Post(address.str(), [=](const httplib::Request& req, httplib::Response& res)
 					{
 						auto result = api.CallBack(api.callbackArgs, req);
+						res.status = result.isSuccess ? 200 : 500;
 						res.set_content(result.Serialize().dump(), "application/json");
 					});
 				break;

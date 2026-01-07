@@ -64,23 +64,26 @@ public:
 
 protected:
 	std::shared_ptr<spdlog::logger> mLogger;
-	std::future<TRes> send_request(uint64_t id, TReq request) {
-		std::lock_guard<std::mutex> lock(mMutex);
-		auto [it, inserted] = mResponseQueue.emplace(id, std::promise<TRes> {});
-		std::future<TRes> future = it->second.get_future();
-
-		mRequestStore[id] = std::move(request);
-		mWorkQueue.push(id);
-		mCv.notify_one();
-		return future;
-	}
-
+	
+	/// <summary>
+	/// Generate an UNIQUE action ID. those are sequential
+	/// </summary>
+	/// <returns></returns>
 	uint64_t generateId()
 	{
 		mId++;
 		return mId;
 	};
 
+
+	/// <summary>
+	/// Helper method to create a valid API endpoint
+	/// </summary>
+	/// <param name="list">A reference to an output vector</param>
+	/// <param name="path">API Endpoint path</param>
+	/// <param name="method">HTTP action method</param>
+	/// <param name="endpointIdentificator">an unique ID that will passed to Handle() to 
+	/// easily identifie the action requested</param>
 	void addEndpoint(std::vector<HttpEndPoint>& list,
 		const std::string& path,
 		HttpMethods method, 
@@ -94,6 +97,31 @@ protected:
 			});
 	}
 
+	/// <summary>
+	/// The execution of the actual request including a check for timeout.
+	/// Please note that due to X-Plane architecture. A request timeout can still be executed
+	/// but the connection will not garantee the result nor his actual execution
+	/// </summary>
+	/// <param name="id">Action ID (must be unique and created in the Handle function</param>
+	/// <param name="ops">any data required by MainThreadHandle</param>
+	/// <returns>The exectued data result or an timedout error</returns>
+	TRes Execute(uint64_t id, TReq ops)
+	{
+		std::future<HttpResponse> resp = send_request(id, ops);
+		if (resp.wait_for(DefaultTimeout) == std::future_status::ready)
+		{
+			return resp.get();
+		}
+		spdlog::critical("[{}] : HAS TIMED OUT", id);
+		return HttpResponse::TimedOut();
+	}
+
+	/// <summary>
+	/// Send the result to main thread to be send back as result
+	/// </summary>
+	/// <param name="id">the unique Action ID</param>
+	/// <param name="data">The return data</param>
+	/// <returns>False if the action id don't exist</returns>
 	bool SetReturnMainThread(uint64_t id, TRes const data)
 	{
 		std::lock_guard<std::mutex> lock(mMutex);
@@ -105,7 +133,12 @@ protected:
 		mResponseQueue.erase(id);
 		return true;
 	}
-
+	/// <summary>
+	///	Get data from Http Thread to X-Plane thread.
+	/// </summary>
+	/// <param name="outId">Action ID linked with the data</param>
+	/// <param name="outData">the data passed with the action id</param>
+	/// <returns>False if there is no action to be completed</returns>
 	bool GetDataMainThread(uint64_t& outId, TReq& outData)
 	{
 		std::unique_lock<std::mutex> lock(mMutex);
@@ -150,5 +183,17 @@ protected:
 	/// the default timeout to reject the request!
 	/// </summary>
 	static constexpr std::chrono::milliseconds DefaultTimeout{ 500 };
+
+private:
+	std::future<TRes> send_request(uint64_t id, TReq request) {
+		std::lock_guard<std::mutex> lock(mMutex);
+		auto [it, inserted] = mResponseQueue.emplace(id, std::promise<TRes> {});
+		std::future<TRes> future = it->second.get_future();
+
+		mRequestStore[id] = std::move(request);
+		mWorkQueue.push(id);
+		mCv.notify_one();
+		return future;
+	}
 };
 

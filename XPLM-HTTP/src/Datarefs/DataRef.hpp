@@ -39,8 +39,13 @@ public:
 	bool isValid() const { return mIsValid; }
 	XPLMDataRef getDataRef() const { return mDataRef; }
 
-	bool setValue(json value) const;
-	bool getValue(DataRefValue& outValue) const;
+	//bool setValue(DataRefValue const value) const;
+	bool setValue(json const value) const;
+	//bool getValue(DataRefValue& outValue) const;
+	bool getValue(json& outValue) const;
+
+	static DataRefType StringToType(const std::string& input);
+	static std::string TypeToString(const DataRefType type);
 
 protected:
 	DataRefType determineType(XPLMDataRef dataRef) const;

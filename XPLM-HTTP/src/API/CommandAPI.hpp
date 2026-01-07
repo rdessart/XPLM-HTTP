@@ -9,6 +9,7 @@ enum class CommandExecution {
 	Once,
 	Begin,
 	End,
+	List
 };
 
 struct CommandOperation {
@@ -27,5 +28,6 @@ public:
 
 private:
 	std::unordered_map<std::string, XPLMCommandRef> mCommandCache;
+	XPLMCommandRef getCommand(const std::string& link);
 };
 

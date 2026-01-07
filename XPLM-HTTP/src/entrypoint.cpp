@@ -2,18 +2,22 @@
 
 #include <API/IBaseAPI.hpp>
 #include "API/CommandAPI.hpp"
+#include "API/DataRefAPI.hpp"
+
 #include <XPLM/XPLMDefs.h>
 #include <XPLM/XPLMProcessing.h>
 #include <vector>
 
-static std::vector<IBaseAPI> apis = {};
+static std::vector<IBaseAPI*> apis = {};
 static HttpServer server;
 static XPLMFlightLoopID serverCallbackID = nullptr;
-static CommandAPI commandApi;
 
 float handleRequestCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon)
 {
-	commandApi.MainThreadHandle();
+	for (auto api : apis)
+	{
+		api->MainThreadHandle();
+	}
 	return -1.0;
 }
 
@@ -23,7 +27,10 @@ float initCallBack(float inElapsedLC, float inElapsedLFL, int inCounter, void* i
 
 	XPLMRegisterFlightLoopCallback(handleRequestCallback, -1.0f, nullptr);
 
-	server.RegisterApi(commandApi);
+	for (auto api : apis)
+	{
+		server.RegisterApi(*api);
+	}
 	server.Start();
 
 	return 0;
@@ -45,18 +52,25 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc)
 
 PLUGIN_API int XPluginEnable() 
 {
+	apis.push_back(new DataRefAPI());
+	apis.push_back(new CommandAPI());
+
 	XPLMRegisterFlightLoopCallback(initCallBack, -1.0f, nullptr);
 	return 1;
 }
 
 PLUGIN_API void XPluginDisable() 
 {
-	XPLMDestroyFlightLoop(serverCallbackID);
+	while (apis.size() > 0)
+	{
+		auto api = apis.back();
+		delete api;
+		apis.pop_back();
+	}
 }
 
 PLUGIN_API void XPluginStop() 
 {
-
 }
 
 PLUGIN_API void XPluginReceiveMessage(XPLMPluginID inFromWho, int inMessage, void* inParam) 

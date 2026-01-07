@@ -48,23 +48,7 @@ HttpResponse DummyDataRefAPI::Handle(int requestId, httplib::Request const req)
     default:
         break;
     }
-
-    //3 - Wait for result and timout management 
-    //TODO: Check if we can put this code into the base class
-    std::future<HttpResponse> resp = send_request(actionId, ops);
-    if (resp.wait_for(DefaultTimeout) == std::future_status::ready)
-    {
-        return resp.get();
-    }
-    spdlog::critical("[{}] : HAS TIMED OUT", actionId);
-
-    return HttpResponse{
-        .isSuccess = false,
-        .statusMessage = "timeout",
-        .returnMessage{
-            {"Message", "Request has timed out (>500ms)"}
-        }
-    };
+    return Execute(actionId, ops);
 }
 
 
@@ -97,11 +81,11 @@ void DummyDataRefAPI::MainThreadHandle()
     uint64_t id;
     DataRefOperation data;
     HttpResponse response;
-    bool res = GetDataMainThread(id, data);
-    if (!res) {
-        spdlog::critical("An unexpected error has occured while getting data for thread execution");
+
+    if (!GetDataMainThread(id, data)) {
         return;
     }
+
     //2 - Treat the data
     switch (data.action)
     {
@@ -122,5 +106,7 @@ void DummyDataRefAPI::MainThreadHandle()
         };
         break;
     }
+
+    //3 - Return
     SetReturnMainThread(id, response);
 }
