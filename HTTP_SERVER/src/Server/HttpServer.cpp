@@ -37,7 +37,12 @@ void HttpServer::Run()
 
 void HttpServer::Init()
 {
-	mServer.Get("/", [&](const httplib::Request& req, httplib::Response& res)
+	if (!mServer.set_mount_point("/", "www/"))
+	{
+		spdlog::warn("No 'www' directory founded! this endpoint will not be active");
+	}
+
+	mServer.Get("/API", [&](const httplib::Request& req, httplib::Response& res)
 		{
 			res.set_content("Hello World", "text/plain");
 		});

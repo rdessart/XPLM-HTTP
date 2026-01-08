@@ -27,6 +27,9 @@
     <ClCompile Include="src\Datarefs\DataRef.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\API\PositionAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\API\CommandAPI.hpp">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Datarefs\DataRef.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\API\PositionAPI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
