@@ -84,19 +84,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\DataRefs\DataRefType.hpp" />
-    <ClInclude Include="include\DataRefs\DataRefValue.hpp" />
-    <ClInclude Include="include\Dispatcher\SimDispatcher.hpp" />
-    <ClInclude Include="include\Dispatcher\SimRequest.hpp" />
-    <ClInclude Include="include\HttpServer.hpp" />
-    <ClInclude Include="include\Commands\ICommandExecutor.hpp" />
-    <ClInclude Include="include\DataRefs\IDataProvider.hpp" />
+    <ClInclude Include="include\API\BaseAPI.hpp" />
+    <ClInclude Include="include\API\HttpEndPoint.hpp" />
+    <ClInclude Include="include\API\HttpResponse.hpp" />
+    <ClInclude Include="include\API\IBaseAPI.hpp" />
+    <ClInclude Include="include\Server\HttpServer.hpp" />
     <ClInclude Include="include\ThreadSafeQueue.hpp" />
-    <ClInclude Include="include\Dispatcher\SimResponse.hpp" />
+    <ClInclude Include="include\RequestRegistry.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\SimDispatcher.cpp" />
-    <ClCompile Include="src\HttpServer.cpp" />
+    <ClCompile Include="src\Server\HttpServer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,33 +1,19 @@
 #include <iostream>
-#include <HttpServer.hpp>
-#include <Dispatcher/SimDispatcher.hpp>
-
-#include "DummyDatarefManager.hpp"
-#include "DummyCommandManager.hpp"
+#include <Server/HttpServer.hpp>
+#include "API/DummyDataRefAPI.hpp"
 
 int main(int argc, char* argv[])
 {
-	ThreadSafeQueue<SimRequest>  requestQueue;
-	ThreadSafeQueue<SimResponse> responseQueue;
-	
-	DummyDatarefManager datarefManager;
-	DummyCommandManager commandManager;
+	HttpServer server;
+	DummyDataRefAPI dataRefApi;
 
-	SimDispatcher dispatcher(datarefManager, commandManager, requestQueue, responseQueue);
-	HttpServer server(requestQueue, responseQueue);
+	server.RegisterApi(dataRefApi);
+	server.Start();
 
-	server.init(8080, "127.0.0.1");
-	std::cout << "Starting HTTP Server at " << server.getIpAddress()
-		<< ":" << server.getPort() << "\n";
-
-	server.start();
-	
-	while (true) {
-		dispatcher.process();
+	while (true)
+	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		dataRefApi.MainThreadHandle();
 	}
-
-
-	server.stop();
 	return 0;
 }

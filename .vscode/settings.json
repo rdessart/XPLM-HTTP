@@ -1,0 +1,19 @@
+{
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/vendors/XPSDK/CHeaders/**",
+        "${workspaceFolder}/vendors/vcpkg/packages/**",
+        "${workspaceFolder}/HTTP_SERVER/include/**",
+        "${workspaceFolder}/XPLM-HTTP/src/**"
+    ],
+    "C_Cpp.default.defines": [
+        "APL",
+        "XPLM200",
+        "XPLM210",
+        "XPLM300",
+        "XPLM301",
+        "XPLM303",
+        "XPLM400",
+        "XPM411"
+
+    ]
+}

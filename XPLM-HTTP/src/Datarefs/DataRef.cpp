@@ -1,6 +1,5 @@
 #include "DataRef.hpp"
-
-
+#include <algorithm>
 
 DataRef::DataRef(const std::string& link) :
 	DataRef(link, DataRefType::Undefined)
@@ -17,39 +16,33 @@ DataRef::DataRef(const std::string& link, DataRefType type):
 	mIsReadOnly = !XPLMCanWriteDataRef(mDataRef);
 }
 
-bool DataRef::setValue(json value) const
+bool DataRef::setValue(json const value) const
 {
 	if (mIsReadOnly) return false;
 	switch (mType)
 	{
-		case DataRefType::Int:
-		{
-			int val = value.get<int>();
-			XPLMSetDatai(mDataRef, val);
-			return true;
-		}
-		case DataRefType::Float:
-		{
-			float val = value.get<float>();
-			XPLMSetDataf(mDataRef, val);
-			return true;
-		}
-		case DataRefType::Double:
-		{
-			double val = value.get<double>();
-			XPLMSetDatad(mDataRef, val);
-			return true;
-		}
-		default:
-			return false;
+	case DataRefType::Int:
+	{
+		XPLMSetDatai(mDataRef, value.get<int>());
+		break;
+	}
+	case DataRefType::Float:
+	{
+		XPLMSetDataf(mDataRef, value.get<float>());
+		break;
+	}
+	case DataRefType::Double:
+	{
+		XPLMSetDatad(mDataRef, value.get<double>());
+		break;
+	}
+	default:
+		return false;
 	};
 	return true;
 }
 
-
-
-
-bool DataRef::getValue(DataRefValue& outValue) const
+bool DataRef::getValue(json& outValue) const
 {
 	switch (mType)
 	{
@@ -72,6 +65,42 @@ bool DataRef::getValue(DataRefValue& outValue) const
 		return false;
 	};
 	return true;
+}
+
+DataRefType DataRef::StringToType(const std::string& input)
+{
+	std::string output(input);
+	std::transform(input.begin(), input.end(), output.begin(), ::toupper);
+
+	if (input == "INT") return DataRefType::Int;
+	if (input == "FLOAT") return DataRefType::Float;
+	if (input == "DOUBLE") return DataRefType::Double;
+	if (input == "FLOAT_ARRAY") return DataRefType::FloatArray;
+	if (input == "INT_ARRAY") return DataRefType::IntArray;
+	if (input == "DATA") return DataRefType::Data;
+
+	return DataRefType::Undefined;
+}
+
+std::string DataRef::TypeToString(const DataRefType type)
+{
+	switch (type)
+	{
+	case DataRefType::Undefined:
+		return "undefined";
+	case DataRefType::Int:
+		return "int";
+	case DataRefType::Float:
+		return "int";
+	case DataRefType::Double:
+		return "int";
+	case DataRefType::FloatArray:
+		return "int";
+	case DataRefType::IntArray:
+		return "int";
+	case DataRefType::Data:
+		return "int";
+	}
 }
 
 DataRefType DataRef::determineType(XPLMDataRef dataRef) const

@@ -90,7 +90,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\DummyDatarefManager.cpp" />
+    <ClCompile Include="src\API\DummyDataRefAPI.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -99,8 +99,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\DummyCommandManager.hpp" />
-    <ClInclude Include="src\DummyDatarefManager.hpp" />
+    <ClInclude Include="src\API\DummyDataRefAPI.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
