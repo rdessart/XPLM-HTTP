@@ -4,8 +4,25 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 #include <XPLM/XPLMDataAccess.h>
-#include <Simulator/DataRefType.hpp>
-#include <Simulator/DataRefValue.hpp>
+
+enum class DataRefType
+{
+	Undefined = xplmType_Unknown,
+	Int = xplmType_Int,
+	Float = xplmType_Float,
+	Double = xplmType_Double,
+	FloatArray = xplmType_FloatArray,
+	IntArray = xplmType_IntArray,
+	Data = xplmType_Data
+};
+
+using DataRefValue = std::variant<
+	int,
+	float,
+	double,
+	std::vector<float>,
+	std::vector<int>,
+	std::vector<uint8_t>>;
 
 using json = nlohmann::json;
 
@@ -22,8 +39,13 @@ public:
 	bool isValid() const { return mIsValid; }
 	XPLMDataRef getDataRef() const { return mDataRef; }
 
-	bool setValue(json value) const;
-	bool getValue(DataRefValue& outValue) const;
+	//bool setValue(DataRefValue const value) const;
+	bool setValue(json const value) const;
+	//bool getValue(DataRefValue& outValue) const;
+	bool getValue(json& outValue) const;
+
+	static DataRefType StringToType(const std::string& input);
+	static std::string TypeToString(const DataRefType type);
 
 protected:
 	DataRefType determineType(XPLMDataRef dataRef) const;
