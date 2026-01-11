@@ -11,6 +11,8 @@ PositionAPI::PositionAPI() : BaseAPI("Position")
 	addDataref("ground_speed", "sim/flightmodel2/position/groundspeed", DataRefType::Undefined);
 	addDataref("true_airspeed", "sim/flightmodel2/position/true_airspeed", DataRefType::Undefined);
 	addDataref("equiv_airspeed", "sim/flightmodel/position/equivalent_airspeed", DataRefType::Undefined);
+	addDataref("cas", "sim/cockpit2/gauges/indicators/calibrated_airspeed_kts_pilot", DataRefType::Undefined);
+	addDataref("mach", "sim/cockpit2/gauges/indicators/mach_pilot", DataRefType::Undefined);
 	addDataref("alpha", "sim/flightmodel2/position/alpha", DataRefType::Undefined);
 	addDataref("beta", "sim/flightmodel2/position/beta", DataRefType::Undefined);
 }
