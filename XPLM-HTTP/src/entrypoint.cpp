@@ -3,7 +3,7 @@
 #include <API/IBaseAPI.hpp>
 #include "API/CommandAPI.hpp"
 #include "API/DataRefAPI.hpp"
-#include "API/PositionAPI.h"
+#include "API/PositionAPI.hpp"
 
 #include <XPLM/XPLMDefs.h>
 #include <XPLM/XPLMProcessing.h>

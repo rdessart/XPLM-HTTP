@@ -86,6 +86,11 @@ void CommandAPI::MainThreadHandle()
         XPLMCommandEnd(command);
         response.statusMessage = "ok:end";
         break;
+    case CommandExecution::List:
+        // List is not an execution mode
+        response.statusMessage = "error:invalid execution mode";
+        response.isSuccess = false;
+        break;
     }
     response.isSuccess = true;
     SetReturnMainThread(id, response);

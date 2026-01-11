@@ -1,4 +1,4 @@
-#include "PositionAPI.h"
+#include "PositionAPI.hpp"
 
 PositionAPI::PositionAPI() : BaseAPI("Position")
 {
@@ -46,6 +46,7 @@ HttpResponse PositionAPI::Handle(int requestId, httplib::Request const req)
 		}
 		return HttpResponse::Ok(result);
 	}
+	return HttpResponse::UnexpectedError();
 }
 
 void PositionAPI::MainThreadHandle()
