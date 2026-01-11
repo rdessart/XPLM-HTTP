@@ -3,6 +3,7 @@
 #include <API/IBaseAPI.hpp>
 #include "API/CommandAPI.hpp"
 #include "API/DataRefAPI.hpp"
+#include "API/PositionAPI.h"
 
 #include <XPLM/XPLMDefs.h>
 #include <XPLM/XPLMProcessing.h>
@@ -54,6 +55,7 @@ PLUGIN_API int XPluginEnable()
 {
 	apis.push_back(new DataRefAPI());
 	apis.push_back(new CommandAPI());
+	apis.push_back(new PositionAPI());
 
 	XPLMRegisterFlightLoopCallback(initCallBack, -1.0f, nullptr);
 	return 1;
