@@ -19,6 +19,7 @@ public:
 	std::string getBaseAddress() const;
 
 	void cors_data(std::unordered_map<std::string, std::string> const& headers);
+	void register_static_file(const std::string& mount_point, const std::string& directory);
 
 protected:
 	httplib::Server mServer;

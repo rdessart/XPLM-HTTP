@@ -37,15 +37,10 @@ void HttpServer::Run()
 
 void HttpServer::Init()
 {
-	if (!mServer.set_mount_point("/", "www/"))
-	{
-		spdlog::warn("No 'www' directory founded! this endpoint will not be active");
-	}
-
 	mServer.Get("/API", [&](const httplib::Request& req, httplib::Response& res)
-		{
-			res.set_content("Hello World", "text/plain");
-		});
+	{
+		res.set_content("Hello World", "text/plain");
+	});
 
 
 	for (auto& kv : mApiMap)
@@ -109,4 +104,12 @@ void HttpServer::cors_data(std::unordered_map<std::string, std::string> const& h
 	}
 	
 	mServer.set_default_headers(headerList);
+}
+
+void HttpServer::register_static_file(const std::string& mount_point, const std::string& directory)
+{
+	if (!mServer.set_mount_point(mount_point, directory))
+	{
+		spdlog::warn("No 'www' directory founded! this endpoint will not be active");
+	}
 }

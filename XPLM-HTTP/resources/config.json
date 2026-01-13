@@ -25,7 +25,11 @@
   "static_files": [
     {
       "path": "Resources\\plugins\\XPLM-HTTP\\www",
-      "url" :  "/"
+      "url": "/"
+    },
+    {
+      "path": "Resources\\plugins\\XPLM-HTTP\\swagger",
+      "url": "/swagger"
     }
   ]
 }

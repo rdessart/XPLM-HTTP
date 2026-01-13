@@ -51,7 +51,13 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc)
 	#endif
 	if(config.enable_crossOrigin) server.cors_data(config.headers);
 	server.SetListeningAddress(config.bind_url, config.bind_port);
-	
+	if (config.static_files.size() > 0)
+	{
+		for (auto& [mount_point, directory] : config.static_files)
+		{
+			server.register_static_file(mount_point, directory);
+		}
+	}
 	return 1;
 }
 
