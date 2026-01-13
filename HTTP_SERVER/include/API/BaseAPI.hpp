@@ -92,7 +92,16 @@ protected:
 		list.push_back({
 			path,
 			method,
-			[this](int id, httplib::Request req) { return this->Handle(id, req); },
+			[this](int id, httplib::Request req) {
+				try
+				{
+					return res = this->Handle(id, req);
+				}
+				catch ()
+				{
+					spdlog::critical("[{}] : UNEXPECTED ERROR DURING HANDLE REQUEST", id);
+					return HttpResponse::UnexpectedError();
+				},
 			endpointIdentificator
 			});
 	}
