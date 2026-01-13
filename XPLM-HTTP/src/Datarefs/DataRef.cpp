@@ -1,3 +1,6 @@
+#ifdef IBM
+	#define NOMINMAX
+#endif
 #include "DataRef.hpp"
 #include <algorithm>
 
@@ -36,6 +39,19 @@ bool DataRef::setValue(json const value) const
 		XPLMSetDatad(mDataRef, value.get<double>());
 		break;
 	}
+	case DataRefType::FloatArray: {
+		int size = XPLMGetDatavf(mDataRef, nullptr, 0, 0);
+		std::vector<float> values = value.get<std::vector<float>>();
+		int maxSize = std::min(size, static_cast<int>(value.size()));
+		XPLMSetDatavf(mDataRef, values.data(), 0, maxSize);
+		break;
+	}
+	case DataRefType::IntArray: {
+		int size = XPLMGetDatavi(mDataRef, nullptr, 0, 0);
+		std::vector<int> values = value.get<std::vector<int>>();
+		XPLMSetDatavi(mDataRef, values.data(), 0, std::min(size, static_cast<int>(value.size())));
+		break;
+	}
 	default:
 		return false;
 	};
@@ -59,6 +75,20 @@ bool DataRef::getValue(json& outValue) const
 	case DataRefType::Double:
 	{
 		outValue = XPLMGetDatad(mDataRef);
+		break;
+	}
+	case DataRefType::FloatArray: {
+		int size = XPLMGetDatavf(mDataRef, nullptr, 0, 0);
+		std::vector<float> values(size);
+		XPLMGetDatavf(mDataRef, values.data(), 0, size);
+		outValue = values;
+		break;
+	}
+	case DataRefType::IntArray: {
+		int size = XPLMGetDatavi(mDataRef, nullptr, 0, 0);
+		std::vector<int> values(size);
+		XPLMGetDatavi(mDataRef, values.data(), 0, size);
+		outValue = values;
 		break;
 	}
 	default:
@@ -86,21 +116,22 @@ std::string DataRef::TypeToString(const DataRefType type)
 {
 	switch (type)
 	{
-	case DataRefType::Undefined:
-		return "undefined";
 	case DataRefType::Int:
 		return "int";
 	case DataRefType::Float:
-		return "int";
+		return "float";
 	case DataRefType::Double:
-		return "int";
+		return "double";
 	case DataRefType::FloatArray:
-		return "int";
+		return "float_arrray";
 	case DataRefType::IntArray:
-		return "int";
+		return "int_array";
 	case DataRefType::Data:
-		return "int";
-	}
+		return "data";
+	default:
+		break;
+	}		
+	return "undefined";
 }
 
 DataRefType DataRef::determineType(XPLMDataRef dataRef) const
