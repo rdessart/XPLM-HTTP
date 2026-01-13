@@ -72,7 +72,10 @@
       <AdditionalDependencies>XPLM_64.lib;XPWidgets_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y /i "$(outdir)" "$(xplane)\Resources\plugins\$(ProjectName)\win_x64"</Command>
+      <Command>xcopy /Y /i "$(outdir)" "$(xplane)\Resources\plugins\$(ProjectName)\win_x64"
+xcopy /Y /i "$(ProjectDir)resources" "$(xplane)\Resources\plugins\$(ProjectName)\"
+xcopy /Y /i "$(ProjectDir)www" "$(xplane)\Resources\plugins\$(ProjectName)\www\"
+xcopy /Y /i "$(ProjectDir)swagger" "$(xplane)\Resources\plugins\$(ProjectName)\swagger\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -93,7 +96,10 @@
       <AdditionalDependencies>XPLM_64.lib;XPWidgets_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y /i "$(outdir)" "$(xplane)\Resources\plugins\$(ProjectName)\win_x64"</Command>
+      <Command>xcopy /Y /i "$(outdir)" "$(xplane)\Resources\plugins\$(ProjectName)\win_x64"
+xcopy /Y /i "$(ProjectDir)resources" "$(xplane)\Resources\plugins\$(ProjectName)\"
+xcopy /Y /i "$(ProjectDir)www" "$(xplane)\Resources\plugins\$(ProjectName)\www\"
+xcopy /Y /i "$(ProjectDir)swagger" "$(xplane)\Resources\plugins\$(ProjectName)\swagger\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -109,9 +115,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\API\PositionAPI.h" />
     <ClInclude Include="src\API\DataRefAPI.hpp" />
     <ClInclude Include="src\API\CommandAPI.hpp" />
+    <ClInclude Include="src\API\PositionAPI.hpp" />
+    <ClInclude Include="src\configuration.hpp" />
     <ClInclude Include="src\Datarefs\DataRef.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

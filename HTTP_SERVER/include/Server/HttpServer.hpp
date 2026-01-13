@@ -18,6 +18,8 @@ public:
 	void Start();
 	std::string getBaseAddress() const;
 
+	void cors_data(std::unordered_map<std::string, std::string> const& headers);
+
 protected:
 	httplib::Server mServer;
 	std::string mIp = "localhost";
@@ -26,6 +28,8 @@ protected:
 	bool mRunning;
 	std::map<std::string, IBaseAPI&> mApiMap;
 	std::shared_ptr<spdlog::logger> mLogger;
+
+	std::unordered_map<std::string, std::string> mConfigHeaders;
 
 private:
 	void Init();

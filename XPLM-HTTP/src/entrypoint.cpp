@@ -1,9 +1,11 @@
 #include <Server/HttpServer.hpp>
-
 #include <API/IBaseAPI.hpp>
+
+#include "configuration.hpp"
 #include "API/CommandAPI.hpp"
 #include "API/DataRefAPI.hpp"
 #include "API/PositionAPI.hpp"
+
 
 #include <XPLM/XPLMDefs.h>
 #include <XPLM/XPLMProcessing.h>
@@ -24,10 +26,7 @@ float handleRequestCallback(float inElapsedSinceLastCall, float inElapsedTimeSin
 
 float initCallBack(float inElapsedLC, float inElapsedLFL, int inCounter, void* inRefCon)
 {
-	server.SetListeningAddress("127.0.0.1", 28080);
-
 	XPLMRegisterFlightLoopCallback(handleRequestCallback, -1.0f, nullptr);
-
 	for (auto api : apis)
 	{
 		server.RegisterApi(*api);
@@ -39,15 +38,20 @@ float initCallBack(float inElapsedLC, float inElapsedLFL, int inCounter, void* i
 
 PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) 
 {
+	Configuration config("./Resources/plugins/XPLM-HTTP/config.json");
+
 	#ifdef IBM
-	strcpy_s(outName, 256, "XPLM-HTTP");
-	strcpy_s(outSig, 256, "eSkyStudio.Network.http");
-	strcpy_s(outDesc, 256, "A X-Plane webserver for dataref access, command exectution and websocket");
+	strcpy_s(outName, 256, config.pluginName.c_str());
+	strcpy_s(outSig, 256, config.pluginDescription.c_str());
+	strcpy_s(outDesc, 256, config.pluginSignature.c_str());
 	#else
-	strcpy(outName, "XPLM-HTTP");
-	strcpy(outSig, "eSkyStudio.Network.http");
-	strcpy(outDesc, "A X-Plane webserver for dataref access, command exectution and websocket");
+	strcpy(outName, config.pluginName.c_str());
+	strcpy(outSig, config.pluginDescription.c_str());
+	strcpy(outDesc, config.pluginSignature.c_str());
 	#endif
+	if(config.enable_crossOrigin) server.cors_data(config.headers);
+	server.SetListeningAddress(config.bind_url, config.bind_port);
+	
 	return 1;
 }
 

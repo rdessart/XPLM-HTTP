@@ -41,7 +41,10 @@
     <ClInclude Include="src\Datarefs\DataRef.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\API\PositionAPI.h">
+    <ClInclude Include="src\API\PositionAPI.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\configuration.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

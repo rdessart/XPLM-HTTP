@@ -99,3 +99,14 @@ std::string HttpServer::getBaseAddress() const
 	address << "http://" << mIp << ":" << mPort;
 	return address.str();
 }
+
+void HttpServer::cors_data(std::unordered_map<std::string, std::string> const& headers)
+{
+	httplib::Headers headerList;
+	for (auto const& [key, value] : headers)
+	{
+		headerList.insert({ {key, value} });
+	}
+	
+	mServer.set_default_headers(headerList);
+}

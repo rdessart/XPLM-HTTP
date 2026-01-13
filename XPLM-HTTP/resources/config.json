@@ -1,0 +1,31 @@
+{
+  "plugin": {
+    "name": "xplm-http",
+    "signature": "rdessart.network.http",
+    "description": "X-Plane plugin providing an HTTP server to interact with X-Plane datarefs and commands."
+  },
+  "endpoint": {
+    "url": "127.0.0.1",
+    "port": 28080
+  },
+  "cors": {
+    "enable": true,
+    "data" : {
+      "allowedOrigins": "*",
+      "allowedMethods": "*",
+      "allowedHeaders": "*"
+    }
+    },
+  "authentication": {
+    "type": "http_basic",
+    "users": {
+      "admin": "password"
+    }
+  },
+  "static_files": [
+    {
+      "path": "Resources\\plugins\\XPLM-HTTP\\www",
+      "url" :  "/"
+    }
+  ]
+}
